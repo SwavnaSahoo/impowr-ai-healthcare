@@ -1,0 +1,2240 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IMPOWR | AI-Enabled Reporting in Regulated Care</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap');
+
+    :root {
+      --bg: #FCF7E6;
+      --paper: #FFFFFF;
+      --ink: #101C31;
+      --ink-soft: #525150;
+      --line: #B3C1D8;
+      --aqua: #008250;
+      --gold: #1F3862;
+      --copper: #9E3B1B;
+      --rose: #9C2426;
+      --violet: #4D3DD0;
+      --signal-physical: #1F3862;
+      --signal-mental: #4D3DD0;
+      --signal-social: #008250;
+      --signal-safe: #9E3B1B;
+      --ok: #008250;
+      --warn: #9E3B1B;
+      --risk: #9E3B1B;
+      --urgent: #9C2426;
+      --shadow: 0 10px 24px rgba(16, 28, 49, 0.08);
+      --radius-xl: 10px;
+      --radius-l: 8px;
+      --radius-m: 6px;
+      --radius-s: 4px;
+      --space-1: 0.35rem;
+      --space-2: 0.65rem;
+      --space-3: 1rem;
+      --space-4: 1.5rem;
+      --space-5: 2rem;
+      --space-6: 2.8rem;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: "IBM Plex Sans", sans-serif;
+      color: var(--ink);
+      background: var(--bg);
+      min-height: 100vh;
+      line-height: 1.5;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background-image: linear-gradient(rgba(16, 28, 49, 0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(16, 28, 49, 0.06) 1px, transparent 1px);
+      background-size: 28px 28px;
+      opacity: 0.2;
+      z-index: -1;
+    }
+
+    .page {
+      max-width: min(96vw, 1680px);
+      margin: 0 auto;
+      padding: 1.25rem 1rem var(--space-6);
+      position: relative;
+    }
+
+    .brandbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.9rem;
+      margin-bottom: 0.8rem;
+      padding: 0.5rem 0.75rem;
+      border: 1px solid var(--line);
+      background: #FFFFFF;
+      border-radius: var(--radius-m);
+    }
+
+    .brand-left {
+      display: flex;
+      align-items: center;
+      gap: 0.55rem;
+      min-width: 0;
+    }
+
+    .brand-logo {
+      width: 28px;
+      height: 28px;
+      object-fit: contain;
+      flex-shrink: 0;
+    }
+
+    .brand-title {
+      font-size: 0.82rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      color: var(--gold);
+      text-transform: uppercase;
+    }
+
+    .brand-sub {
+      font-size: 0.68rem;
+      color: var(--ink-soft);
+      white-space: nowrap;
+    }
+
+    .brand-right {
+      font-size: 0.66rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #6c7280;
+      white-space: nowrap;
+      text-align: right;
+    }
+
+    .signal-spine {
+      position: absolute;
+      top: 13.5rem;
+      bottom: 4rem;
+      left: 0.68rem;
+      width: 2px;
+      border-radius: var(--radius-s);
+      background: linear-gradient(var(--gold), rgba(16, 28, 49, 0.15));
+      opacity: 0.45;
+    }
+
+    .hero {
+      border-radius: var(--radius-xl);
+      background:
+        linear-gradient(130deg, rgba(31, 56, 98, 0.94), rgba(16, 28, 49, 0.96)),
+        url('https://images.unsplash.com/photo-1584515933487-779824d29309?auto=format&fit=crop&w=1600&q=80') center/cover;
+      color: #fbf8f1;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.24);
+      box-shadow: var(--shadow);
+      position: relative;
+      display: grid;
+      grid-template-columns: 1.28fr 0.9fr;
+      min-height: 420px;
+      animation: reveal 700ms ease both;
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      right: -90px;
+      top: -110px;
+      width: 340px;
+      height: 340px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(252, 247, 230, 0.32), transparent 68%);
+      pointer-events: none;
+    }
+
+    .hero-copy {
+      padding: var(--space-5);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: var(--space-3);
+    }
+
+    .kicker {
+      font-size: 0.69rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: #f5cd89;
+      font-weight: 700;
+    }
+
+    h1 {
+      margin-top: 0.5rem;
+      font-family: "Source Serif 4", serif;
+      font-size: clamp(2.15rem, 4.2vw, 3.55rem);
+      font-weight: 700;
+      line-height: 0.93;
+      letter-spacing: 0.01em;
+      max-width: 15ch;
+    }
+
+    .hero-sub {
+      margin-top: 0.8rem;
+      max-width: 46ch;
+      color: #ece1cd;
+      font-size: 0.94rem;
+    }
+
+    .pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-1);
+    }
+
+    .hero-pill {
+      font-size: 0.66rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      padding: 0.24rem 0.64rem;
+      border-radius: var(--radius-s);
+      color: #f5e4ca;
+      border: 1px solid rgba(245, 228, 202, 0.42);
+      background: rgba(245, 228, 202, 0.08);
+      white-space: nowrap;
+    }
+
+    .hero-data {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: var(--space-2);
+      margin: var(--space-5);
+      align-content: end;
+    }
+
+    .metric {
+      border: 1px solid rgba(245, 228, 202, 0.45);
+      background: rgba(245, 228, 202, 0.11);
+      border-radius: var(--radius-m);
+      padding: 0.95rem;
+      backdrop-filter: blur(3px);
+      min-height: 92px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .metric .v {
+      font-family: "Source Serif 4", serif;
+      font-size: 1.8rem;
+      line-height: 1;
+      color: #fff;
+      margin-bottom: 0.2rem;
+    }
+
+    .metric .k {
+      font-size: 0.68rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #eadcc7;
+    }
+
+    .nav-wrap {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      margin-top: 0.9rem;
+      padding: 0.55rem 0;
+      backdrop-filter: blur(14px);
+      background: linear-gradient(to bottom, rgba(252, 247, 230, 0.94), rgba(252, 247, 230, 0));
+    }
+
+    .deck-controls {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .deck-btn {
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--ink);
+      border-radius: var(--radius-s);
+      min-height: 44px;
+      min-width: 44px;
+      font-size: 0.74rem;
+      font-weight: 700;
+      cursor: pointer;
+      padding: 0.3rem 0.58rem;
+    }
+
+    .deck-btn:hover,
+    .deck-btn:focus-visible {
+      border-color: var(--gold);
+      color: var(--gold);
+      outline: none;
+    }
+
+    .deck-meta {
+      font-size: 0.66rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #64748b;
+      text-align: center;
+      font-weight: 700;
+    }
+
+    .progress {
+      margin-top: 0.45rem;
+      height: 6px;
+      border-radius: var(--radius-s);
+      background: rgba(31, 56, 98, 0.12);
+      overflow: hidden;
+      border: 1px solid rgba(15, 23, 40, 0.1);
+    }
+
+    .progress-bar {
+      height: 100%;
+      width: 10%;
+      border-radius: var(--radius-s);
+      background: #1F3862;
+      transition: width 260ms ease;
+    }
+
+    .nav {
+      display: flex;
+      gap: 0.4rem;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      padding-bottom: 0.25rem;
+      scrollbar-width: thin;
+    }
+
+    .nb {
+      border: 1px solid var(--line);
+      background: #FFFFFF;
+      border-radius: var(--radius-s);
+      font-size: 0.67rem;
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+      font-weight: 700;
+      color: #27324a;
+      cursor: pointer;
+      padding: 0.38rem 0.72rem;
+      transition: 220ms ease;
+      white-space: nowrap;
+      min-height: 44px;
+    }
+
+    .nb:hover,
+    .nb:focus-visible {
+      color: #111827;
+      border-color: #111827;
+      transform: translateY(-1px);
+      outline: none;
+    }
+
+    .nb.active {
+      color: #fff;
+      border-color: #1F3862;
+      background: #1F3862;
+      box-shadow: none;
+    }
+
+    .sec {
+      display: none;
+      margin-top: var(--space-4);
+      background: #FFFFFF;
+      border: 1px solid #B3C1D8;
+      border-radius: var(--radius-xl);
+      padding: calc(var(--space-4) + 0.2rem);
+      box-shadow: var(--shadow);
+      animation: sectionIn 400ms ease both;
+      min-height: calc(100vh - 230px);
+    }
+
+    .sec.active {
+      display: block;
+    }
+
+    .sl {
+      font-size: 0.69rem;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      color: #6f5f45;
+      font-weight: 700;
+      margin-bottom: 0.25rem;
+    }
+
+    .st {
+      font-family: "Source Serif 4", serif;
+      font-size: clamp(1.6rem, 2.6vw, 2.2rem);
+      line-height: 1.05;
+      margin-bottom: 0.5rem;
+      color: var(--ink);
+    }
+
+    .ss {
+      color: var(--ink-soft);
+      max-width: 70ch;
+      font-size: 0.92rem;
+      margin-bottom: 1rem;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: var(--space-3);
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: var(--space-2);
+    }
+
+    .card {
+      background: #fbf7ef;
+      border: 1px solid #dcccc2;
+      border-radius: var(--radius-l);
+      padding: var(--space-3);
+      box-shadow: none;
+    }
+
+    .card h3 {
+      font-size: 0.95rem;
+      margin-bottom: 0.35rem;
+      color: var(--ink);
+    }
+
+    .card p {
+      color: var(--ink-soft);
+      font-size: 0.87rem;
+    }
+
+    .quote {
+      border-left: 3px solid var(--copper);
+      padding: 0.75rem 0.9rem;
+      background: #fae4d6;
+      color: #72351f;
+      border-radius: 0 var(--radius-s) var(--radius-s) 0;
+      font-size: 0.87rem;
+      margin-top: 1rem;
+      font-style: italic;
+    }
+
+    .pipeline {
+      display: grid;
+      gap: 0.45rem;
+    }
+
+    .pipe-node {
+      border: 1px solid var(--line);
+      border-radius: var(--radius-m);
+      padding: 0.72rem 0.9rem;
+      background: var(--paper);
+      display: grid;
+      grid-template-columns: 34px 1fr;
+      align-items: center;
+      gap: var(--space-2);
+    }
+
+    .pipe-node b {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      font-size: 0.77rem;
+      font-family: "IBM Plex Mono", monospace;
+      border: 1px solid;
+    }
+
+    .n-blue b { color: var(--signal-physical); background: #e8f2fb; border-color: #acc7e4; }
+    .n-purple b { color: var(--signal-mental); background: #f1eefb; border-color: #c6c0ea; }
+    .n-green b { color: var(--signal-social); background: #e5f3ee; border-color: #a8d2c2; }
+    .n-copper b { color: var(--signal-safe); background: #fae8df; border-color: #dfb29f; }
+
+    .pipe-node h4 {
+      font-size: 0.87rem;
+      margin-bottom: 0.1rem;
+      color: var(--ink);
+    }
+
+    .pipe-node p {
+      font-size: 0.78rem;
+      color: var(--ink-soft);
+    }
+
+    .arrow {
+      font-size: 1rem;
+      text-align: center;
+      color: #8f7f64;
+      letter-spacing: 0.2em;
+    }
+
+    .fw {
+      background: #f9fbff;
+      color: var(--ink);
+      border: 1px solid #B3C1D8;
+      border-radius: var(--radius-l);
+      padding: var(--space-4);
+    }
+
+    .fh {
+      border: 1px solid #B3C1D8;
+      border-radius: var(--radius-m);
+      padding: var(--space-3);
+      box-shadow: none;
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: var(--space-2);
+      margin-bottom: 0.8rem;
+      background: #eef3fb;
+    }
+
+    .fh h2 {
+      font-family: "Source Serif 4", serif;
+      font-size: 1.4rem;
+      margin-bottom: 0.1rem;
+    }
+
+    .fh p,
+    .vid {
+      color: #4b5563;
+      font-size: 0.76rem;
+    }
+
+    .ob {
+      margin-bottom: 0.8rem;
+      border: 1px solid #d8c7a8;
+      background: #fff7ea;
+      border-radius: var(--radius-s);
+      padding: 0.6rem 0.8rem;
+      font-size: 0.76rem;
+      color: #6b4f2e;
+    }
+
+    .block {
+      border: 1px solid #D5DFEF;
+      border-radius: var(--radius-m);
+      padding: 0.9rem;
+      margin-bottom: 0.75rem;
+      background: #ffffff;
+    }
+
+    .btitle {
+      color: #1F3862;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      font-weight: 700;
+      font-size: 0.64rem;
+      margin-bottom: 0.7rem;
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+    }
+
+    .tsql,
+    .tnlp,
+    .torg {
+      border-radius: 999px;
+      padding: 0.1rem 0.45rem;
+      font-size: 0.58rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+
+    .tsql { background: #d6ebf5; color: #205f87; }
+    .tnlp { background: #e8e4f8; color: #4f4680; }
+    .torg { background: #f7e8d1; color: #8b5a16; }
+
+    .fr,
+    .fr3,
+    .fr1 {
+      display: grid;
+      gap: 0.6rem;
+      margin-bottom: 0.55rem;
+    }
+
+    .fr { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .fr3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .fr1 { grid-template-columns: 1fr; }
+
+    .fg {
+      display: flex;
+      flex-direction: column;
+      gap: 0.24rem;
+    }
+
+    .fg label {
+      font-size: 0.72rem;
+      color: #1f2937;
+      font-weight: 600;
+    }
+
+    .fg select,
+    .fg input,
+    .fg textarea {
+      border: 1px solid #B3C1D8;
+      border-radius: var(--radius-s);
+      background: #FFFFFF;
+      color: #111827;
+      padding: 0.5rem 0.6rem;
+      font-size: 0.78rem;
+      font-family: "IBM Plex Sans", sans-serif;
+      min-height: 40px;
+    }
+
+    .fg textarea { min-height: 76px; resize: vertical; }
+
+    .fg select:focus,
+    .fg input:focus,
+    .fg textarea:focus,
+    .nb:focus-visible,
+    .df:focus-visible,
+    .st2:focus-visible,
+    .client-row:focus-visible {
+      outline: 2px solid #1F3862;
+      outline-offset: 1px;
+    }
+
+    .cl {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.48rem;
+    }
+
+    .ci {
+      display: inline-flex;
+      gap: 0.3rem;
+      align-items: center;
+      font-size: 0.72rem;
+      color: #1f2937;
+      cursor: pointer;
+    }
+
+    .ci input[type="checkbox"] { accent-color: var(--copper); }
+
+    .cb2 {
+      font-size: 0.56rem;
+      padding: 0.1rem 0.38rem;
+      border-radius: 999px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      white-space: nowrap;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.2rem;
+    }
+
+    .cbc { background: #f7d7d9; color: #8d2d35; }
+    .cbh { background: #f4ddcf; color: #8c4527; }
+    .cbm { background: #f8e6cc; color: #996015; }
+    .cbo { background: #e7e3f6; color: #534b82; }
+
+    .ds2 {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    .rp2 {
+      border: 1px solid #D5DFEF;
+      border-radius: var(--radius-m);
+      padding: 0.65rem 0.8rem;
+      margin-top: 0.7rem;
+      background: #f5f9ff;
+    }
+
+    .sp2 {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+    }
+
+    .pill {border-radius: var(--radius-s);
+      padding: 0.12rem 0.45rem;
+      font-size: 0.58rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      font-weight: 700;
+      animation: popIn 220ms ease;
+    }
+
+    .pill-p { background: #d9eaf6; color: #1d5f8f; }
+    .pill-m { background: #e8e3f7; color: #50437f; }
+    .pill-s { background: #dceddf; color: #246d57; }
+    .pill-sg { background: #f8dcdc; color: #a53c44; }
+    .pill-n { background: rgba(247, 239, 224, 0.2); color: #e8dcc8; }
+
+    .subr {
+      margin-top: 0.8rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+    }
+
+    .bsub,
+    .bdraft,
+    .dash-action,
+    .dash-action-outline {
+      border-radius: var(--radius-s);
+      cursor: pointer;
+      font-family: "IBM Plex Sans", sans-serif;
+      min-height: 44px;
+      font-size: 0.73rem;
+      padding: 0.45rem 0.86rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      transition: 220ms ease;
+    }
+
+    .bsub,
+    .dash-action {
+      border: 1px solid #1F3862;
+      color: #FFFFFF;
+      background: #1F3862;
+    }
+
+    .bsub:hover,
+    .dash-action:hover {
+      background: #2f4f84;
+    }
+
+    .bdraft,
+    .dash-action-outline {
+      border: 1px solid #1F3862;
+      color: #1F3862;
+      background: transparent;
+    }
+
+    .subb,
+    .abox,
+    .subf,
+    .indent {
+      display: none;
+      border-radius: var(--radius-s);
+      margin-top: 0.6rem;
+      padding: 0.62rem 0.8rem;
+      font-size: 0.76rem;
+    }
+
+    .subb {
+      background: #dbeee7;
+      border: 1px solid #84baa7;
+      color: #235a47;
+    }
+
+    .abox {
+      background: #f7d7d9;
+      border: 1px solid #cc858b;
+      color: #842c32;
+    }
+
+    .subf {
+      background: #f3e6ea;
+      border: 1px solid #d7b4bf;
+      color: #5f2f44;
+    }
+
+    .indent {
+      background: #ece8f9;
+      border: 1px solid #c8c0ea;
+      color: #4f4680;
+    }
+
+    .abox-t {
+      font-size: 0.78rem;
+      font-weight: 700;
+      margin-bottom: 0.15rem;
+      letter-spacing: 0.02em;
+    }
+
+    .abox-b {
+      font-size: 0.73rem;
+      line-height: 1.5;
+      color: inherit;
+    }
+
+    .indent-t {
+      font-size: 0.62rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.11em;
+      margin-bottom: 0.35rem;
+      color: #534b82;
+    }
+
+    .rtable {
+      width: 100%;
+      border-collapse: collapse;
+      border-radius: var(--radius-s);
+      overflow: hidden;
+    }
+
+    .rtable td {
+      border-bottom: 1px solid rgba(247, 215, 217, 0.35);
+    }
+
+    .rtable tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .rtable input[type="radio"] {
+      width: 16px;
+      height: 16px;
+      accent-color: #b24752;
+      cursor: pointer;
+    }
+
+    .sysbar {
+      border-top: 1px solid #D5DFEF;
+      margin-top: 0.9rem;
+      padding-top: 0.7rem;
+      color: #64748b;
+      text-align: center;
+      font-size: 0.63rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .mt {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 1rem;
+      font-size: 0.79rem;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-m);
+      overflow: hidden;
+      display: table;
+      table-layout: auto;
+      white-space: normal;
+    }
+
+    .mt th,
+    .mt td { word-wrap: break-word; }
+
+    .mt th {
+      background: #152037;
+      color: #f5ebd8;
+      text-align: left;
+      padding: 0.52rem 0.6rem;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      font-weight: 700;
+    }
+
+    .mt td {
+      padding: 0.5rem 0.6rem;
+      border-bottom: 1px solid #dfd2bc;
+      font-size: 0.84rem;
+      color: var(--ink-soft);
+    }
+
+    .mt tr:nth-child(even) td { background: #f5ecda; }
+
+    .cd {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      color: var(--ink);
+      font-weight: 600;
+    }
+
+    .dot {
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    .dc { background: #a53c44; }
+    .dh { background: #c15d37; }
+    .dm { background: #bf7e2a; }
+    .dl { background: #26785e; }
+
+    .ed {
+      border: 1px solid var(--line);
+      border-radius: var(--radius-l);
+      background: var(--paper);
+      padding: var(--space-3);
+    }
+
+    .esig {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .st2 {
+      border: 1px solid var(--line);
+      border-radius: var(--radius-s);
+      background: #FFFFFF;
+      color: var(--ink-soft);
+      padding: 0.34rem 0.72rem;
+      min-height: 44px;
+      font-size: 0.72rem;
+      cursor: pointer;
+      transition: 200ms ease;
+      font-weight: 600;
+    }
+
+    .st2.on-physical { background: #d9eaf6; color: #1b5783; border-color: #94bbd8; }
+    .st2.on-mental { background: #e8e3f7; color: #4f4680; border-color: #b9b1df; }
+    .st2.on-social { background: #dceee4; color: #246d57; border-color: #9ec9b7; }
+    .st2.on-safeguard { background: #f8dcdc; color: #9d3c44; border-color: #dca5ab; }
+
+    .sd {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: var(--space-3);
+      flex-wrap: wrap;
+      margin: 0.8rem 0;
+    }
+
+    .sbig {
+      font-family: "Source Serif 4", serif;
+      font-size: 3.1rem;
+      line-height: 0.9;
+    }
+
+    .sband {
+      padding: 0.1rem 0.65rem;
+      border-radius: var(--radius-s);
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 700;
+    }
+
+    .blow { background: #dceee4; color: #246d57; }
+    .bmod { background: #f8e6cc; color: #8f5f17; }
+    .bhi { background: #f4ddcf; color: #8c4527; }
+    .burg { background: #f7d7d9; color: #8d2d35; }
+
+    #calc {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 0.69rem;
+      border: 1px dashed var(--line);
+      background: #f5ecda;
+      border-radius: var(--radius-s);
+      padding: 0.45rem;
+      color: #4f5871;
+      line-height: 1.6;
+    }
+
+    .br {
+      display: grid;
+      grid-template-columns: 150px 1fr 36px;
+      align-items: center;
+      gap: 0.45rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .bl { font-size: 0.73rem; color: var(--ink-soft); }
+
+    .bt {
+      height: 8px;
+      border-radius: 999px;
+      background: #e6d8c1;
+      overflow: hidden;
+    }
+
+    .bf {
+      height: 8px;
+      border-radius: 999px;
+      transition: width 320ms ease;
+    }
+
+    .q2c {
+      border: 1px solid var(--line);
+      border-radius: var(--radius-m);
+      padding: 0.8rem 0.9rem;
+      margin-bottom: 0.55rem;
+      background: #fdf8ee;
+    }
+
+    .q2t { font-size: 0.9rem; color: var(--ink); font-weight: 700; margin-bottom: 0.2rem; }
+    .q2b { font-size: 0.81rem; color: var(--ink-soft); }
+    .q2i {
+      margin-top: 0.4rem;
+      border-left: 3px solid #c79a54;
+      padding-left: 0.6rem;
+      color: #80561f;
+      font-size: 0.73rem;
+      font-weight: 600;
+    }
+
+    .cg {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0.5rem;
+      margin-bottom: 0.85rem;
+    }
+
+    .cc {
+      border: 1px solid var(--line);
+      border-radius: var(--radius-m);
+      background: var(--paper);
+      padding: 0.65rem;
+      text-align: center;
+    }
+
+    .cv {
+      font-family: "Source Serif 4", serif;
+      font-size: 1.7rem;
+      line-height: 1;
+      color: var(--ink);
+    }
+
+    .ck {
+      margin-top: 0.18rem;
+      color: var(--ink-soft);
+      font-size: 0.72rem;
+    }
+
+    .si {
+      border: 1px solid var(--line);
+      border-radius: var(--radius-m);
+      background: var(--paper);
+      padding: 0.72rem;
+      display: grid;
+      grid-template-columns: 26px 1fr;
+      gap: 0.6rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .sn {
+      width: 26px;
+      height: 26px;
+      border-radius: 6px;
+      display: grid;
+      place-items: center;
+      color: #fff;
+      font-size: 0.74rem;
+      font-weight: 700;
+      background: #9c6a1c;
+    }
+
+    .stl { font-size: 0.85rem; font-weight: 700; color: var(--ink); margin-bottom: 0.2rem; }
+    .sb2 { font-size: 0.76rem; color: var(--ink-soft); }
+
+    .stg {
+      margin-top: 0.35rem;
+      display: inline-block;
+      font-size: 0.62rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 0.12rem 0.48rem;
+      border-radius: var(--radius-s);
+      background: #f7e8d1;
+      color: #8b5a16;
+      font-weight: 700;
+    }
+
+    .dash-header {
+      border: 1px solid #202d47;
+      border-radius: var(--radius-l);
+      background: linear-gradient(120deg, #1F3862, #101C31);
+      color: #FCF7E6;
+      padding: var(--space-3);
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .dash-header h2 {
+      font-family: "Source Serif 4", serif;
+      font-size: 1.55rem;
+      margin-bottom: 0.14rem;
+    }
+
+    .dash-header p { font-size: 0.72rem; color: #ddcfb8; }
+
+    .dash-stat-row {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 0.45rem;
+      margin-bottom: 0.8rem;
+    }
+
+    .dash-stat {
+      border: 1px solid var(--line);
+      border-radius: var(--radius-m);
+      background: var(--paper);
+      text-align: center;
+      padding: 0.6rem;
+    }
+
+    .dash-stat-val {
+      font-family: "Source Serif 4", serif;
+      font-size: 2rem;
+      line-height: 0.9;
+    }
+
+    .dash-stat-label {
+      font-size: 0.64rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #685f51;
+      font-weight: 700;
+      margin-top: 0.16rem;
+    }
+
+    .dash-filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+      margin-bottom: 0.7rem;
+    }
+
+    .df {
+      border: 1px solid var(--line);
+      border-radius: var(--radius-s);
+      background: #FFFFFF;
+      color: var(--ink-soft);
+      cursor: pointer;
+      min-height: 44px;
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 700;
+      padding: 0.36rem 0.72rem;
+      transition: 220ms ease;
+    }
+
+    .df.active {
+      color: #fff;
+      background: #1F3862;
+      border-color: #1F3862;
+    }
+
+    .client-row {
+      border: 1px solid var(--line);
+      border-left-width: 4px;
+      border-radius: var(--radius-m);
+      padding: 0.72rem;
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      margin-bottom: 0.42rem;
+      cursor: pointer;
+      background: var(--paper);
+      transition: 220ms ease;
+    }
+
+    .client-row:hover { transform: translateY(-1px); box-shadow: 0 8px 20px rgba(15, 23, 40, 0.08); }
+    .client-row.urgent { border-left-color: var(--urgent); }
+    .client-row.high { border-left-color: var(--risk); }
+    .client-row.moderate { border-left-color: var(--warn); }
+    .client-row.low { border-left-color: var(--ok); }
+
+    .client-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      color: #fff;
+      font-size: 0.76rem;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .client-info { flex: 1; min-width: 0; }
+    .client-name { color: var(--ink); font-size: 0.85rem; font-weight: 700; margin-bottom: 0.1rem; }
+    .client-meta { color: var(--ink-soft); font-size: 0.69rem; }
+
+    .client-band {border-radius: var(--radius-s);
+      font-size: 0.6rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 700;
+      padding: 0.1rem 0.5rem;
+      white-space: nowrap;
+    }
+
+    .band-urgent { background: #f7d7d9; color: #8d2d35; }
+    .band-high { background: #f4ddcf; color: #8c4527; }
+    .band-moderate { background: #f8e6cc; color: #8f5f17; }
+    .band-low { background: #dceee4; color: #246d57; }
+
+    .client-score {
+      font-family: "Source Serif 4", serif;
+      font-size: 1.55rem;
+      width: 52px;
+      text-align: right;
+      flex-shrink: 0;
+    }
+
+    .client-detail {
+      border: 1px solid var(--line);
+      border-radius: var(--radius-m);
+      background: #f9f2e5;
+      padding: 0.8rem;
+      margin-bottom: 0.42rem;
+      display: none;
+    }
+
+    .client-detail h3 { color: var(--ink); font-size: 0.9rem; margin-bottom: 0.38rem; }
+
+    .driver-row {
+      font-size: 0.74rem;
+      color: var(--ink-soft);
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .driver-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+
+    .llm-label {
+      margin-top: 0.55rem;
+      font-size: 0.62rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #544b7f;
+      font-weight: 700;
+    }
+
+    .llm-output {
+      border: 1px solid #c8c0ea;
+      background: #ece8f9;
+      color: #4f4680;
+      border-radius: var(--radius-s);
+      padding: 0.6rem;
+      font-size: 0.75rem;
+      margin-top: 0.24rem;
+      margin-bottom: 0.4rem;
+      font-style: italic;
+    }
+
+    .ostat {
+      border: 1px solid var(--line);
+      border-radius: var(--radius-m);
+      background: var(--paper);
+      text-align: center;
+      padding: 0.66rem;
+    }
+
+    .ostat-v {
+      font-family: "Source Serif 4", serif;
+      font-size: 1.75rem;
+      line-height: 1;
+    }
+
+    .ostat-k { font-size: 0.67rem; color: var(--ink-soft); margin-top: 0.1rem; }
+
+    .resp-row {
+      display: grid;
+      grid-template-columns: 86px 1fr 54px 84px;
+      align-items: center;
+      gap: 0.45rem;
+      margin-bottom: 0.4rem;
+    }
+
+    .rband {
+      font-size: 0.6rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 700;
+      border-radius: 999px;
+      text-align: center;
+      padding: 0.15rem 0.35rem;
+    }
+
+    .rtrack,
+    .sig-bar-track {
+      height: 8px;
+      border-radius: 999px;
+      overflow: hidden;
+      background: #e8dac3;
+    }
+
+    .rfill,
+    .sig-bar-fill {
+      height: 8px;
+      border-radius: 999px;
+    }
+
+    .rval { font-size: 0.72rem; font-weight: 700; color: var(--ink); }
+    .rtarget { font-size: 0.64rem; color: #7b705f; }
+
+    .week-grid {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 0.35rem;
+    }
+
+    .week-col { text-align: center; }
+
+    .wbar-wrap {
+      border-radius: var(--radius-s) var(--radius-s) 0 0;
+      border: 1px solid #ddceb6;
+      background: #f6ecda;
+      height: 84px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      gap: 1px;
+      overflow: hidden;
+    }
+
+    .wbar-seg { width: 100%; }
+
+    .wlbl { margin-top: 0.2rem; font-size: 0.64rem; color: #7b705f; }
+
+    .sig-bar-row {
+      display: grid;
+      grid-template-columns: 150px 1fr 40px 80px;
+      align-items: center;
+      gap: 0.45rem;
+      margin-bottom: 0.4rem;
+    }
+
+    .sig-bar-lbl { font-size: 0.75rem; color: var(--ink-soft); }
+    .sig-bar-val { font-size: 0.72rem; color: var(--ink); font-weight: 700; }
+    .sig-bar-domain {
+      text-align: center;
+      border-radius: 999px;
+      font-size: 0.58rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 700;
+      padding: 0.12rem 0.38rem;
+    }
+
+    .panel-dark {
+      border-radius: var(--radius-l);
+      padding: 0.95rem;
+      border: 1px solid #202d47;
+      background: linear-gradient(120deg, #1F3862, #101C31);
+      color: #FCF7E6;
+      font-size: 0.79rem;
+      line-height: 1.6;
+    }
+
+    .req { color: #9E3B1B; margin-left: 0.15rem; }
+
+    .visible-only-screenreaders {
+      position: absolute;
+      left: -9999px;
+    }
+
+    @keyframes reveal {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes sectionIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes popIn {
+      from { transform: translateY(2px) scale(0.95); opacity: 0; }
+      to { transform: translateY(0) scale(1); opacity: 1; }
+    }
+
+    @media (max-width: 980px) {
+      .hero {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-data {
+        margin-top: 0;
+        margin-left: var(--space-5);
+        margin-right: var(--space-5);
+        margin-bottom: var(--space-5);
+      }
+
+      .mt {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+      }
+      .signal-spine { display: none; }
+      .deck-controls { grid-template-columns: 1fr 1fr; }
+      .deck-meta { grid-column: 1 / -1; order: -1; text-align: left; }
+      .grid-2,
+      .fr,
+      .resp-row,
+      .sig-bar-row { grid-template-columns: 1fr; }
+      .grid-3,
+      .fr3,
+      .dash-stat-row,
+      .cg { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .br { grid-template-columns: 1fr; }
+      .bl { margin-bottom: 0.2rem; }
+      .client-score { width: auto; }
+    }
+
+    @media (max-width: 640px) {
+      .page { padding: 1rem 0.6rem 2.1rem; }
+      .brandbar { flex-wrap: wrap; }
+      .hero-copy { padding: 1.15rem; }
+      .hero-data { margin: 0 1.15rem 1.15rem; grid-template-columns: 1fr; }
+      .sec { padding: 1rem; }
+      .grid-3,
+      .dash-stat-row,
+      .cg,
+      .week-grid { grid-template-columns: 1fr; }
+      .fr3,
+      .fr,
+      .resp-row,
+      .sig-bar-row { grid-template-columns: 1fr; }
+      .client-row { flex-wrap: wrap; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * { animation: none !important; transition: none !important; }
+    }
+
+    .help-tip {
+      margin-top: 0.52rem;
+      font-size: 0.62rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #6b7280;
+      font-weight: 700;
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="brandbar">
+      <div class="brand-left">
+        <img class="brand-logo" src="https://static.wixstatic.com/media/48706b_e536f1c8bcec4db0a7b2b963873c4d1f~mv2.png/v1/fill/w_125,h_125,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/13k%20users.png" alt="IMPOWR" />
+        <div>
+          <div class="brand-title">IMPOWR</div>
+          <div class="brand-sub">Continual Care Solutions</div>
+        </div>
+      </div>
+      <div class="brand-right">AI-THon Presentation • April 2026</div>
+    </div>
+
+    <div class="signal-spine" aria-hidden="true"></div>
+
+    <header class="hero">
+      <div class="hero-copy">
+        <div>
+          <div class="kicker">Simon AI-Thon 2026 • University of Rochester</div>
+          <h1>AI-Enabled Reporting in Regulated Care</h1>
+          <p class="hero-sub">Privacy-first predictive risk scoring, safeguarding, and operational analytics for community care. Zero model training on PHI. Fully auditable action trails.</p>
+        </div>
+        <div>
+          <div class="pill-row" aria-label="Team members">
+            <span class="hero-pill">Swavna Sahoo</span>
+            <span class="hero-pill">Madhurika Bageria</span>
+            <span class="hero-pill">Shloka Patade</span>
+            <span class="hero-pill">Mustafa Haq</span>
+            <span class="hero-pill">Dara Moore</span>
+          </div>
+        </div>
+      </div>
+      <div class="hero-data" aria-label="Top metrics">
+        <div class="metric">
+          <div class="v">240k</div>
+          <div class="k">Lives served</div>
+        </div>
+        <div class="metric">
+          <div class="v">13k+</div>
+          <div class="k">Active users</div>
+        </div>
+        <div class="metric">
+          <div class="v">0</div>
+          <div class="k">PHI in model training</div>
+        </div>
+      </div>
+    </header>
+
+    <div class="nav-wrap">
+      <div class="deck-controls">
+        <button class="deck-btn" onclick="goSection(-1)" aria-label="Previous slide">Previous</button>
+        <div id="deck-meta" class="deck-meta">Slide 1 of 10 • The problem</div>
+        <button class="deck-btn" onclick="goSection(1)" aria-label="Next slide">Next</button>
+      </div>
+      <nav class="nav" aria-label="Section navigation">
+        <button class="nb active" data-sec="problem" onclick="show('problem')" aria-current="page">The problem</button>
+        <button class="nb" data-sec="arch" onclick="show('arch')">Architecture</button>
+        <button class="nb" data-sec="note" onclick="show('note')">Care note</button>
+        <button class="nb" data-sec="matrix" onclick="show('matrix')">Risk matrix</button>
+        <button class="nb" data-sec="engine" onclick="show('engine')">Risk engine</button>
+        <button class="nb" data-sec="q2" onclick="show('q2')">Innovation</button>
+        <button class="nb" data-sec="cost" onclick="show('cost')">Cost and scale</button>
+        <button class="nb" data-sec="dash" onclick="show('dash')">Dashboard</button>
+        <button class="nb" data-sec="compete" onclick="show('compete')">Competitors</button>
+        <button class="nb" data-sec="orgdash" onclick="show('orgdash')">Org analytics</button>
+      </nav>
+      <div class="progress" aria-hidden="true"><div id="progress-bar" class="progress-bar"></div></div>
+      <div class="help-tip">Presenter shortcut: use left and right arrow keys to move sections</div>
+    </div>
+
+    <section id="s-problem" class="sec active">
+      <div class="sl">The challenge</div>
+      <div class="st">What IMPOWR needs to solve</div>
+      <p class="ss">Continual Care Solutions operates IMPOWR across 13,000+ users and 240,000 lives. The brief was to design AI-enhanced analytics that stay compliant, explainable, and clinically usable under HIPAA constraints.</p>
+      <div class="grid-2">
+        <article class="card">
+          <h3>Building compliant AI on regulated data</h3>
+          <p>How can AI-enabled reporting run on Azure against relational care data without model training on proprietary or patient-identifiable records?</p>
+        </article>
+        <article class="card">
+          <h3>Producing measurable, real-world value</h3>
+          <p>Which analytics capabilities improve compliance response times, staffing decisions, and intervention outcomes for high-risk clients?</p>
+        </article>
+      </div>
+      <p class="quote">Our answer is a three-layer design: deterministic privacy controls, an expert-defined Bayesian risk engine, and a rulebook-governed explanation layer with role-based access.</p>
+    </section>
+
+    <section id="s-arch" class="sec">
+      <div class="sl">System design</div>
+      <div class="st">Architecture pipeline</div>
+      <p class="ss">Data enters as caregiver input and exits as role-filtered, audited, explainable output. No PHI enters model training.</p>
+      <div class="pipeline">
+        <div class="pipe-node n-blue"><b>1</b><div><h4>Caregiver forms</h4><p>Physical, mental, social structured inputs.</p></div></div>
+        <div class="arrow">↓</div>
+        <div class="pipe-node n-blue"><b>2</b><div><h4>Secure ingestion gateway</h4><p>Validation, classification, and policy enforcement.</p></div></div>
+        <div class="arrow">↓</div>
+        <div class="pipe-node n-purple"><b>3</b><div><h4>Deterministic tokenization</h4><p>HMAC hashing with identity vault in Azure Key Vault.</p></div></div>
+        <div class="arrow">↓</div>
+        <div class="grid-2">
+          <div class="pipe-node n-green"><b>4a</b><div><h4>Tokenized data store</h4><p>Azure SQL with k-anonymity constraints.</p></div></div>
+          <div class="pipe-node n-green"><b>4b</b><div><h4>NLP signal extraction</h4><p>Distress and safeguarding cues from free text.</p></div></div>
+        </div>
+        <div class="arrow">↓</div>
+        <div class="pipe-node n-copper"><b>5</b><div><h4>Risk matrix + Bayesian engine</h4><p>Expert weights, organization-specific thresholds, explainable outputs.</p></div></div>
+        <div class="arrow">↓</div>
+        <div class="pipe-node n-purple"><b>6</b><div><h4>LLM explanation layer</h4><p>Read-only plain language summary, no retraining on client data.</p></div></div>
+        <div class="arrow">↓</div>
+        <div class="pipe-node n-blue"><b>7</b><div><h4>Role-based dashboard + audit logs</h4><p>Azure AD RBAC with immutable access traces.</p></div></div>
+      </div>
+    </section>
+
+    <section id="s-note" class="sec">
+      <div class="sl">Step 1 of pipeline • live demo</div>
+      <div class="st">Caregiver visit note</div>
+      <p class="ss">Structured dropdowns feed into Azure SQL as clean signals. Free text is scanned for redacted risk cues. As you fill fields, signals appear below.</p>
+
+      <div class="fw">
+        <div class="fh">
+          <div>
+            <h2>Care visit note</h2>
+            <p>Client: Margaret Chen • Worker: Sarah Okonkwo • Home visit</p>
+          </div>
+          <div class="vid">VN-2026-04-17-0041</div>
+        </div>
+
+        <div class="ob"><strong>Rochester Community Care:</strong> criticality thresholds are configured by your organization's clinical lead and can differ by site.</div>
+
+        <div class="block">
+          <div class="btitle">Visit details <span class="tsql">Azure SQL</span></div>
+          <div class="fr3">
+            <div class="fg"><label for="visit-date">Date<span class="req">*</span></label><input id="visit-date" type="date" value="2026-04-17" /></div>
+            <div class="fg"><label for="visit-arrival">Arrival<span class="req">*</span></label><input id="visit-arrival" type="time" value="09:15" /></div>
+            <div class="fg"><label for="visit-departure">Departure<span class="req">*</span></label><input id="visit-departure" type="time" value="10:00" /></div>
+          </div>
+          <div class="fr">
+            <div class="fg"><label for="visit-status">Visit status<span class="req">*</span></label>
+              <select id="visit-status" onchange="up()">
+                <option>Completed</option>
+                <option>Partially completed</option>
+                <option>Client refused entry</option>
+                <option>No answer - welfare concern raised</option>
+                <option>Cancelled by client</option>
+              </select>
+            </div>
+            <div class="fg"><label for="care-worker">Care worker</label><input id="care-worker" type="text" value="Sarah Okonkwo" readonly /></div>
+          </div>
+        </div>
+
+        <div class="block">
+          <div class="btitle">Physical wellbeing <span class="tsql">Azure SQL</span></div>
+          <div class="fr">
+            <div class="fg"><label for="physical-appetite">Appetite<span class="req">*</span></label><select id="physical-appetite" onchange="up()"><option>Normal - ate full meal</option><option>Reduced - ate partially</option><option>Refused meal</option><option>Unable to assess</option></select></div>
+            <div class="fg"><label for="physical-hydration">Hydration<span class="req">*</span></label><select id="physical-hydration" onchange="up()"><option>Good - drinking normally</option><option>Low - encouraged to drink</option><option>Refused fluids</option><option>Signs of dehydration</option></select></div>
+          </div>
+          <div class="fr">
+            <div class="fg"><label for="physical-medication">Medication<span class="req">*</span></label><select id="physical-medication" onchange="up()"><option>Taken as prescribed</option><option>Refused medication</option><option>Not available</option><option>Administered by worker</option><option>Not applicable</option></select></div>
+            <div class="fg"><label for="physical-mobility">Mobility</label><select id="physical-mobility" onchange="up()"><option>Stable - no change</option><option>Slight decline noted</option><option>Significant decline</option><option>Fall occurred</option></select></div>
+          </div>
+          <div class="fr">
+            <div class="fg"><label>Sleep - hours last night</label>
+              <select id="sleep-f" onchange="up()"><option value="">Not recorded</option><option value="9plus">9 or more hours</option><option value="7-9">7 to 9 hours (normal)</option><option value="5-7">5 to 7 hours (reduced)</option><option value="3-5">3 to 5 hours</option><option value="u3">Under 3 hours</option><option value="dec">Client declined to share</option></select>
+            </div>
+            <div class="fg"><label>Pregnancy status <span class="cb2 cbh"><span class="ds2" style="background:#c15d37"></span>High if confirmed</span></label>
+              <select id="preg-f" onchange="up()"><option value="">Not applicable</option><option value="confirmed">Confirmed pregnant</option><option value="suspected">Possibly pregnant</option><option value="postpartum">Postpartum within 12 weeks</option><option value="no">Not pregnant</option></select>
+            </div>
+          </div>
+          <div id="preg-a" class="abox"><div class="abox-t">Pregnancy flag active</div><div class="abox-b">Client is confirmed pregnant or postpartum. High-priority signal flagged in the risk engine.</div></div>
+        </div>
+
+        <div class="block">
+          <div class="btitle">Mental and emotional wellbeing <span class="tsql">Azure SQL</span></div>
+          <div class="fr">
+            <div class="fg"><label for="mental-mood">Mood<span class="req">*</span></label><select id="mental-mood" onchange="up()"><option>Positive and settled</option><option>Neutral</option><option>Low or withdrawn</option><option>Distressed</option><option>Agitated</option></select></div>
+            <div class="fg"><label for="mental-engagement">Engagement</label><select id="mental-engagement" onchange="up()"><option>Engaged and communicative</option><option>Quiet but cooperative</option><option>Disengaged</option><option>Refused interaction</option></select></div>
+          </div>
+
+          <div class="block" style="margin-bottom:0;background:rgba(165,60,68,0.09)">
+            <div class="btitle" style="color:#9C2426"><span class="cb2 cbc"><span class="ds2" style="background:#a53c44"></span>Critical - platform override</span> Suicidal ideation assessment<span class="req">*</span></div>
+            <table class="rtable" style="width:100%;border-collapse:collapse">
+              <tr><td style="padding:0.24rem"><input type="radio" name="sui" value="no" onchange="up()" checked /></td><td style="padding:0.24rem;font-size:0.74rem;color:#3f1f24">No ideation expressed</td></tr>
+              <tr><td style="padding:0.24rem"><input type="radio" name="sui" value="passive" onchange="up()" /></td><td style="padding:0.24rem;font-size:0.74rem;color:#3f1f24">Passive ideation</td></tr>
+              <tr><td style="padding:0.24rem"><input type="radio" name="sui" value="active" onchange="up()" /></td><td style="padding:0.24rem;font-size:0.74rem;color:#3f1f24">Active ideation</td></tr>
+            </table>
+            <div id="sui-sub" class="subf">
+              <label for="sui-means">Has the client been asked about means or plan?</label>
+              <select id="sui-means" onchange="up()"><option value="">Select</option><option value="no-plan">Asked - no specific plan identified</option><option value="has-plan">Asked - client has a specific plan</option><option value="refused">Client refused to answer safety questions</option></select>
+            </div>
+            <div id="sui-a" class="abox"><div class="abox-t">Immediate safeguarding escalation triggered</div><div class="abox-b">Suicidal ideation recorded. Submitted immediately to clinical supervisor and safeguarding lead.</div></div>
+          </div>
+        </div>
+
+        <div class="block">
+          <div class="btitle">Safeguarding indicators <span class="tsql">Azure SQL</span> <span class="torg">Thresholds set by Rochester Community Care</span></div>
+          <div class="cl">
+            <label class="ci"><input type="checkbox" onchange="up()" /> Abuse by another person <span class="cb2 cbc"><span class="ds2" style="background:#a53c44"></span>Critical</span></label>
+            <label class="ci"><input type="checkbox" onchange="up()" /> Family or carer conflict <span class="cb2 cbh"><span class="ds2" style="background:#c15d37"></span>High</span></label>
+            <label class="ci"><input type="checkbox" onchange="up()" /> Expressed feeling unsafe at home <span class="cb2 cbh"><span class="ds2" style="background:#c15d37"></span>High</span></label>
+            <label class="ci"><input type="checkbox" onchange="up()" /> Sudden unexplained behavioral change <span class="cb2 cbh"><span class="ds2" style="background:#c15d37"></span>High</span></label>
+            <label class="ci"><input type="checkbox" onchange="up()" /> Refused physiotherapy session <span class="cb2 cbo"><span class="ds2" style="background:#5a4f89"></span>Org-defined</span></label>
+          </div>
+        </div>
+
+        <div class="block">
+          <div class="btitle">Social determinants <span class="tsql">Azure SQL</span> <span class="torg">Weights set by Rochester Community Care</span></div>
+          <div class="fr">
+            <div class="fg"><label>Employment status<span class="req">*</span></label>
+              <select id="emp-f" onchange="up()"><option value="">Select</option><option value="full">Employed full time</option><option value="part">Employed part time</option><option value="self">Self-employed</option><option value="retired">Retired</option><option value="student">Student</option><option value="seek">Unemployed - actively seeking</option><option value="not-seek">Unemployed - not seeking</option><option value="unable">Unable to work due to health</option><option value="carer">Unpaid carer</option></select>
+            </div>
+            <div class="fg"><label>Annual household income</label>
+              <select id="inc-f" onchange="up()"><option value="">Select or declined to share</option><option value="0-11k">0 to 11,600 (10 percent bracket)</option><option value="11k-47k">11,601 to 47,150 (12 percent bracket)</option><option value="47k-100k">47,151 to 100,525 (22 percent bracket)</option><option value="100k-191k">100,526 to 191,950 (24 percent bracket)</option><option value="191k+">Above 191,950</option><option value="none">No income</option><option value="dec">Declined to share</option></select>
+            </div>
+          </div>
+          <div class="fr1"><div class="fg"><label>Receiving government benefits?</label>
+            <select id="ben-f" onchange="up()"><option value="">Select</option><option value="yes">Yes</option><option value="no">No</option><option value="applied">Applied - awaiting decision</option><option value="unk">Unknown</option></select>
+          </div></div>
+          <div id="ben-detail" class="indent"><div class="indent-t">Which benefits?</div>
+            <div class="cl">
+              <label class="ci"><input type="checkbox" /> Medicaid</label>
+              <label class="ci"><input type="checkbox" /> Medicare</label>
+              <label class="ci"><input type="checkbox" /> SNAP food stamps</label>
+              <label class="ci"><input type="checkbox" /> Housing assistance Section 8</label>
+            </div>
+          </div>
+          <div class="fr1" style="margin-top:0.45rem"><div class="fg"><label>Needs assistance with daily needs?</label>
+            <select id="needs-f" onchange="up()"><option value="">Select</option><option value="yes">Yes - assistance needed</option><option value="no">No - managing independently</option><option value="partial">Partial - some areas of concern</option><option value="unk">Unknown</option></select>
+          </div></div>
+          <div id="needs-detail" class="indent"><div class="indent-t">What kind of assistance?</div>
+            <div class="cl">
+              <label class="ci"><input type="checkbox" onchange="up()" /> Housing - at risk or unstable</label>
+              <label class="ci"><input type="checkbox" onchange="up()" /> Food - food insecurity</label>
+              <label class="ci"><input type="checkbox" onchange="up()" /> Social connection - isolation</label>
+              <label class="ci"><input type="checkbox" onchange="up()" /> Mental health support - access</label>
+            </div>
+          </div>
+          <div id="sdoh-a" class="abox"><div class="abox-t">Financial vulnerability flagged</div><div class="abox-b">Client has no income or is in the lowest income bracket. Moderate-to-high social determinant signal flagged.</div></div>
+        </div>
+
+        <div class="block">
+          <div class="btitle">Free text observation <span class="tnlp">NLP redaction</span></div>
+          <div class="fr1"><div class="fg"><label for="ft">Describe what you observed, heard, or are concerned about</label><textarea id="ft" placeholder="e.g. Client appeared withdrawn and mentioned feeling unsafe. Refused lunch. Home was very cold." rows="4" onkeyup="up()"></textarea></div></div>
+        </div>
+
+        <div class="rp2">
+          <div style="font-size:0.64rem;text-transform:uppercase;letter-spacing:0.08em;color:#ecdcbf;margin-bottom:0.35rem">Signals detected • will feed into risk engine</div>
+          <div class="sp2" id="pa"><span class="pill pill-n">No signals flagged yet</span></div>
+        </div>
+
+        <div class="subb" id="subb"><h3>Note submitted to Azure SQL</h3><p>Structured signals were written to the feature table, free text queued for redaction, and the Bayesian engine was triggered.</p></div>
+        <div class="subr"><button class="bsub" onclick="document.getElementById('subb').style.display='block'">Submit note</button><button class="bdraft">Save draft</button></div>
+        <div class="sysbar">System record • Internal ref: TKN_4821 • Rochester Community Care • IMPOWR v2.4</div>
+      </div>
+    </section>
+
+    <section id="s-matrix" class="sec">
+      <div class="sl">Risk matrix • expert-defined weights</div>
+      <div class="st">Signals, criticality, and multipliers</div>
+      <p class="ss">Weights are authored by clinical experts and governed by local policy. Critical signals can bypass score banding and force immediate escalation.</p>
+      <table class="mt">
+        <thead><tr><th>Criticality</th><th>Domain</th><th>Signal</th><th>Multiplier</th><th>Window</th></tr></thead>
+        <tbody>
+          <tr><td><div class="cd"><span class="dot dc"></span>Critical</div></td><td>Safeguarding</td><td>Self-harm indicator</td><td>5.0x + override</td><td>Immediate</td></tr>
+          <tr><td><div class="cd"><span class="dot dc"></span>Critical</div></td><td>Safeguarding</td><td>Abuse disclosure</td><td>5.0x + override</td><td>Immediate</td></tr>
+          <tr><td><div class="cd"><span class="dot dh"></span>High</div></td><td>Physical</td><td>Missed medication</td><td>2.5x</td><td>7 days</td></tr>
+          <tr><td><div class="cd"><span class="dot dh"></span>High</div></td><td>Mental</td><td>Distress in notes</td><td>2.5x</td><td>7 days</td></tr>
+          <tr><td><div class="cd"><span class="dot dm"></span>Moderate</div></td><td>Social</td><td>Lack of support</td><td>1.5x</td><td>30 days</td></tr>
+          <tr><td><div class="cd"><span class="dot dl"></span>Protective</div></td><td>Social</td><td>Stable support network</td><td>0.8x</td><td>30 days</td></tr>
+        </tbody>
+      </table>
+      <div class="panel-dark">Risk banding: 0-25% = Low • 25-50% = Moderate • 50-70% = High • 70%+ = Urgent • Critical override bypasses score and triggers immediate action.</div>
+    </section>
+
+    <section id="s-engine" class="sec">
+      <div class="sl">Interactive demo • step 4</div>
+      <div class="st">Bayesian risk engine</div>
+      <p class="ss">Toggle signals to simulate posterior risk updates. This is deterministic math on expert multipliers, not model retraining.</p>
+      <div class="ed">
+        <div style="font-size:0.79rem;font-weight:700;margin-bottom:0.55rem;color:var(--ink)">Active signals</div>
+        <div class="esig" id="esigs">
+          <button class="st2" data-domain="physical" data-w="2.5" onclick="toggleSig(this)">Missed medication</button>
+          <button class="st2" data-domain="physical" data-w="1.5" onclick="toggleSig(this)">Refused meal</button>
+          <button class="st2" data-domain="physical" data-w="2.5" onclick="toggleSig(this)">Dehydration signs</button>
+          <button class="st2" data-domain="mental" data-w="2.5" onclick="toggleSig(this)">Distress in notes</button>
+          <button class="st2" data-domain="mental" data-w="1.5" onclick="toggleSig(this)">Depression flag</button>
+          <button class="st2" data-domain="mental" data-w="2.5" onclick="toggleSig(this)">Substance use signal</button>
+          <button class="st2" data-domain="social" data-w="2.0" onclick="toggleSig(this)">Housing instability</button>
+          <button class="st2" data-domain="social" data-w="0.8" onclick="toggleSig(this)">Stable support network</button>
+          <button class="st2" data-domain="safeguard" data-w="5.0" onclick="toggleSig(this)">Self-harm indicator</button>
+          <button class="st2" data-domain="safeguard" data-w="5.0" onclick="toggleSig(this)">Abuse disclosure</button>
+          <button class="st2" data-domain="safeguard" data-w="2.5" onclick="toggleSig(this)">Sudden behavior change</button>
+        </div>
+
+        <div class="sd">
+          <div>
+            <div style="font-size:0.67rem;text-transform:uppercase;letter-spacing:0.08em;color:#7c705f">Posterior probability</div>
+            <div style="display:flex;align-items:baseline;gap:0.35rem"><span class="sbig" id="sval">10%</span><span class="sband blow" id="sband">Low</span></div>
+          </div>
+          <div style="flex:1;min-width:210px">
+            <div style="font-size:0.68rem;color:#7c705f;margin-bottom:0.28rem">Prior = 0.10, updated by active signals</div>
+            <div id="calc">odds = 0.111 (no signals active)</div>
+          </div>
+        </div>
+
+        <div style="margin-top:0.5rem">
+          <div style="font-size:0.67rem;color:#7c705f;margin-bottom:0.3rem">Signal contributions</div>
+          <div id="ebars"></div>
+        </div>
+
+        <div id="eoverride" style="display:none;margin-top:0.6rem;border:1px solid #d59ca1;background:#f7d7d9;color:#8d2d35;border-radius:8px;padding:0.6rem;font-size:0.74rem">
+          <strong>Critical override • immediate escalation.</strong> A level-4 safeguarding signal is active. Score calculation is bypassed and mandatory reporting is triggered.
+        </div>
+
+        <div style="margin-top:0.7rem;padding-top:0.55rem;border-top:1px solid var(--line)">
+          <div style="font-size:0.66rem;color:#7c705f;text-transform:uppercase;letter-spacing:0.08em">Rulebook action</div>
+          <div id="eaction" style="font-size:0.78rem;color:var(--ink-soft);margin-top:0.18rem">No signals active - client at baseline monitoring.</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="s-q2" class="sec">
+      <div class="sl">Question 2 • innovation</div>
+      <div class="st">What makes IMPOWR more innovative</div>
+      <p class="ss">Five capabilities that convert static reporting into intervention intelligence.</p>
+      <div class="q2c"><div class="q2t">Predictive risk scoring • daily per client</div><div class="q2b">Bayesian scoring updates each client every day from structured and NLP-derived signals.</div><div class="q2i">Innovation: surfaces intervention opportunities before escalation.</div></div>
+      <div class="q2c"><div class="q2t">Automated compliance and regulatory filing</div><div class="q2b">Trigger-based report generation reduces manual effort and avoids delayed submissions.</div><div class="q2i">Innovation: compliance work becomes automated output.</div></div>
+      <div class="q2c"><div class="q2t">NLP safeguarding detection</div><div class="q2b">Notes are scanned for distress, abuse indicators, and neglect cues, then routed to safeguarding leads.</div><div class="q2i">Innovation: finds critical cues hidden in narrative text.</div></div>
+      <div class="q2c"><div class="q2t">Outcome tracking for funding evidence</div><div class="q2b">Tracks whether care interventions actually reduce risk over time and across cohorts.</div><div class="q2i">Innovation: turns delivery into measurable evidence.</div></div>
+    </section>
+
+    <section id="s-cost" class="sec">
+      <div class="sl">Feasibility</div>
+      <div class="st">Cost, scaling, and funding</div>
+      <p class="ss">At 1,000 active clients, the architecture remains cost-efficient and margin-positive under a practical SaaS model.</p>
+      <div class="cg">
+        <div class="cc"><div class="cv">~$180</div><div class="ck">Per month • MVP stack</div></div>
+        <div class="cc"><div class="cv">~$475</div><div class="ck">Per month • full production</div></div>
+        <div class="cc"><div class="cv">0</div><div class="ck">PHI in model training</div></div>
+      </div>
+      <div class="grid-3" style="margin-bottom:0.75rem">
+        <div class="si"><div class="sn">A</div><div><div class="stl">Tiered SaaS pricing</div><div class="sb2">At $5/client/month, 1,000 clients yield $5k revenue against roughly $425 infra spend.</div><span class="stg">Revenue model</span></div></div>
+        <div class="si"><div class="sn">B</div><div><div class="stl">Government grants</div><div class="sb2">CMS and SAMHSA technology grants can subsidize deployment in vulnerable populations.</div><span class="stg">Non-dilutive</span></div></div>
+        <div class="si"><div class="sn">C</div><div><div class="stl">Value-based contracts</div><div class="sb2">Share in documented savings from reduced crises and faster intervention.</div><span class="stg">Outcome-linked</span></div></div>
+      </div>
+      <div class="panel-dark">Scaling path: start with Bayesian rulebook MVP, then add NLP redaction and explanation layer. Costs scale sub-linearly as load increases.</div>
+    </section>
+
+    <section id="s-dash" class="sec">
+      <div class="sl">Step 8 • authorized view</div>
+      <div class="st">Care coordinator dashboard</div>
+      <p class="ss">Names are reattached only after token-vault authorization. Click any client to view risk drivers and AI summary.</p>
+
+      <div class="dash-header">
+        <div>
+          <h2>Rochester Community Care</h2>
+          <p>Coordinator: Dr. Priya Nair • Caseload: 24 clients • Last updated: Today 09:47 AM</p>
+        </div>
+        <div class="hero-pill" style="align-self:flex-start">Live • Azure Event Grid</div>
+      </div>
+
+      <div class="dash-stat-row">
+        <div class="dash-stat"><div class="dash-stat-val" style="color:#8d2d35">2</div><div class="dash-stat-label">Urgent</div></div>
+        <div class="dash-stat"><div class="dash-stat-val" style="color:#b34b39">4</div><div class="dash-stat-label">High risk</div></div>
+        <div class="dash-stat"><div class="dash-stat-val" style="color:#9c6a1c">7</div><div class="dash-stat-label">Moderate</div></div>
+        <div class="dash-stat"><div class="dash-stat-val" style="color:#26785e">11</div><div class="dash-stat-label">Low / stable</div></div>
+      </div>
+
+      <div class="dash-filters">
+        <button class="df active" onclick="filterDash('all',this)">All clients</button>
+        <button class="df" onclick="filterDash('urgent',this)">Urgent only</button>
+        <button class="df" onclick="filterDash('high',this)">High risk</button>
+        <button class="df" onclick="filterDash('moderate',this)">Moderate</button>
+        <button class="df" onclick="filterDash('low',this)">Low / stable</button>
+      </div>
+
+      <div id="client-list">
+        <div class="client-row urgent" data-band="urgent" onclick="toggleDetail('d1')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleDetail('d1')}" tabindex="0" role="button" aria-controls="d1" aria-expanded="false">
+          <div class="client-avatar" style="background:#8d2d35">MC</div>
+          <div class="client-info"><div class="client-name">Margaret Chen</div><div class="client-meta">Age 67 • Home visit Tue • Worker: Sarah Okonkwo</div></div>
+          <span class="client-band band-urgent">Urgent</span>
+          <div class="client-score" style="color:#8d2d35">84%</div>
+        </div>
+        <div class="client-detail" id="d1">
+          <h3>AI risk summary • Margaret Chen</h3>
+          <div class="driver-row"><span class="driver-dot" style="background:#b34b39"></span>Missed medication (2.5x)</div>
+          <div class="driver-row"><span class="driver-dot" style="background:#b34b39"></span>Distress in notes (2.5x)</div>
+          <div class="driver-row"><span class="driver-dot" style="background:#9c6a1c"></span>Refused meal (1.5x)</div>
+          <div class="llm-label">Plain English summary • Azure OpenAI</div>
+          <div class="llm-output">Margaret is flagged urgent. Missed medication, reduced intake, and distress language indicate immediate welfare follow-up within 24 hours.</div>
+          <button class="dash-action">Schedule welfare check</button>
+          <button class="dash-action-outline">View full case</button>
+        </div>
+
+        <div class="client-row high" data-band="high" onclick="toggleDetail('d2')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleDetail('d2')}" tabindex="0" role="button" aria-controls="d2" aria-expanded="false">
+          <div class="client-avatar" style="background:#b34b39">EW</div>
+          <div class="client-info"><div class="client-name">Eleanor Walsh</div><div class="client-meta">Age 81 • Home visit Wed • Worker: Sarah Okonkwo</div></div>
+          <span class="client-band band-high">High risk</span>
+          <div class="client-score" style="color:#b34b39">63%</div>
+        </div>
+        <div class="client-detail" id="d2">
+          <h3>AI risk summary • Eleanor Walsh</h3>
+          <div class="driver-row"><span class="driver-dot" style="background:#b34b39"></span>Fall occurred + mobility decline</div>
+          <div class="driver-row"><span class="driver-dot" style="background:#9c6a1c"></span>Low mood observed</div>
+          <div class="llm-label">Plain English summary • Azure OpenAI</div>
+          <div class="llm-output">Eleanor is high risk. Contact within 48 hours and open a physiotherapy referral pathway.</div>
+          <button class="dash-action">Contact within 48 hours</button>
+          <button class="dash-action-outline">View full case</button>
+        </div>
+
+        <div class="client-row moderate" data-band="moderate" onclick="toggleDetail('d3')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleDetail('d3')}" tabindex="0" role="button" aria-controls="d3" aria-expanded="false">
+          <div class="client-avatar" style="background:#9c6a1c">DK</div>
+          <div class="client-info"><div class="client-name">David Kim</div><div class="client-meta">Age 43 • Home visit Thu • Worker: Tom Adeyemi</div></div>
+          <span class="client-band band-moderate">Moderate</span>
+          <div class="client-score" style="color:#9c6a1c">38%</div>
+        </div>
+        <div class="client-detail" id="d3">
+          <h3>AI risk summary • David Kim</h3>
+          <div class="driver-row"><span class="driver-dot" style="background:#9c6a1c"></span>Depression flag</div>
+          <div class="driver-row"><span class="driver-dot" style="background:#246d57"></span>Stable support network (0.8x protective)</div>
+          <div class="llm-label">Plain English summary • Azure OpenAI</div>
+          <div class="llm-output">Moderate risk with social and financial vulnerability. Check-in should occur within 5 business days.</div>
+          <button class="dash-action">Schedule check-in</button>
+          <button class="dash-action-outline">View full case</button>
+        </div>
+
+        <div class="client-row low" data-band="low" onclick="toggleDetail('d4')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleDetail('d4')}" tabindex="0" role="button" aria-controls="d4" aria-expanded="false">
+          <div class="client-avatar" style="background:#26785e">AP</div>
+          <div class="client-info"><div class="client-name">Amara Patel</div><div class="client-meta">Age 72 • Home visit Fri • Worker: Sarah Okonkwo</div></div>
+          <span class="client-band band-low">Low / stable</span>
+          <div class="client-score" style="color:#26785e">12%</div>
+        </div>
+        <div class="client-detail" id="d4">
+          <h3>AI risk summary • Amara Patel</h3>
+          <div class="driver-row"><span class="driver-dot" style="background:#26785e"></span>Medication taken and positive engagement</div>
+          <div class="driver-row"><span class="driver-dot" style="background:#26785e"></span>Family contact confirmed</div>
+          <div class="llm-label">Plain English summary • Azure OpenAI</div>
+          <div class="llm-output">Low risk and stable. Continue standard cadence.</div>
+          <button class="dash-action-outline">View full case</button>
+        </div>
+      </div>
+
+      <div class="panel-dark" style="margin-top:0.8rem">AI processed anonymous tokens only. Names are re-attached after role validation. Every dashboard view is logged.</div>
+    </section>
+
+    <section id="s-compete" class="sec">
+      <div class="sl">Market context</div>
+      <div class="st">Who is in this space</div>
+      <p class="ss">Most platforms deliver scheduling and compliance workflows. The strategic gap is explainable per-client risk scoring without PHI model training.</p>
+      <div class="grid-2">
+        <div class="card"><h3>Birdie / Access Evo / Nourish</h3><p>Strong operational tooling, limited predictive safeguarding intelligence at individual-client level.</p></div>
+        <div class="card"><h3>WellSky / AlayaCare</h3><p>Broader North American footprint with analytics capabilities, but differentiated PHI-safe architecture remains an opportunity.</p></div>
+      </div>
+      <div class="panel-dark" style="margin-top:0.7rem">Differentiator: IMPOWR combines zero-PHI training boundaries, explainable Bayesian scoring, NLP safeguarding alerts, and SDoH-weighted logic in one auditable loop.</div>
+    </section>
+
+    <section id="s-orgdash" class="sec">
+      <div class="sl">The missing layer</div>
+      <div class="st">Org-level analytics to build next</div>
+      <p class="ss">Individual scoring is only the first layer. Organization-level improvement requires response-time tracking, trend analysis, and intervention efficacy loops.</p>
+
+      <div class="grid-3" style="margin-bottom:0.7rem">
+        <div class="ostat"><div class="ostat-v" style="color:#8d2d35">8%</div><div class="ostat-k">Urgent • 2 clients</div></div>
+        <div class="ostat"><div class="ostat-v" style="color:#b34b39">17%</div><div class="ostat-k">High risk • 4 clients</div></div>
+        <div class="ostat"><div class="ostat-v" style="color:#9c6a1c">29%</div><div class="ostat-k">Moderate • 7 clients</div></div>
+      </div>
+
+      <div class="card" style="margin-bottom:0.7rem">
+        <h3 style="margin-bottom:0.6rem">Average response time to first action</h3>
+        <div class="resp-row"><div class="rband" style="background:#f7d7d9;color:#8d2d35">Urgent</div><div class="rtrack"><div class="rfill" style="width:22%;background:#8d2d35"></div></div><div class="rval">6.2 hrs</div><div class="rtarget">target 4h</div></div>
+        <div class="resp-row"><div class="rband" style="background:#f4ddcf;color:#8c4527">High</div><div class="rtrack"><div class="rfill" style="width:55%;background:#b34b39"></div></div><div class="rval">31 hrs</div><div class="rtarget">target 48h</div></div>
+        <div class="resp-row"><div class="rband" style="background:#f8e6cc;color:#8f5f17">Moderate</div><div class="rtrack"><div class="rfill" style="width:78%;background:#9c6a1c"></div></div><div class="rval">6.2 d</div><div class="rtarget">target 5d</div></div>
+      </div>
+
+      <div class="card" style="margin-bottom:0.7rem">
+        <h3 style="margin-bottom:0.6rem">Caseload distribution • 6-week view</h3>
+        <div class="week-grid">
+          <div class="week-col"><div class="wbar-wrap"><div class="wbar-seg" style="height:8%;background:#8d2d35"></div><div class="wbar-seg" style="height:14%;background:#b34b39"></div><div class="wbar-seg" style="height:26%;background:#9c6a1c"></div><div class="wbar-seg" style="height:52%;background:#26785e"></div></div><div class="wlbl">W11</div></div>
+          <div class="week-col"><div class="wbar-wrap"><div class="wbar-seg" style="height:9%;background:#8d2d35"></div><div class="wbar-seg" style="height:16%;background:#b34b39"></div><div class="wbar-seg" style="height:27%;background:#9c6a1c"></div><div class="wbar-seg" style="height:48%;background:#26785e"></div></div><div class="wlbl">W12</div></div>
+          <div class="week-col"><div class="wbar-wrap"><div class="wbar-seg" style="height:9%;background:#8d2d35"></div><div class="wbar-seg" style="height:17%;background:#b34b39"></div><div class="wbar-seg" style="height:28%;background:#9c6a1c"></div><div class="wbar-seg" style="height:46%;background:#26785e"></div></div><div class="wlbl">W13</div></div>
+          <div class="week-col"><div class="wbar-wrap"><div class="wbar-seg" style="height:10%;background:#8d2d35"></div><div class="wbar-seg" style="height:18%;background:#b34b39"></div><div class="wbar-seg" style="height:29%;background:#9c6a1c"></div><div class="wbar-seg" style="height:43%;background:#26785e"></div></div><div class="wlbl">W14</div></div>
+          <div class="week-col"><div class="wbar-wrap"><div class="wbar-seg" style="height:9%;background:#8d2d35"></div><div class="wbar-seg" style="height:18%;background:#b34b39"></div><div class="wbar-seg" style="height:30%;background:#9c6a1c"></div><div class="wbar-seg" style="height:43%;background:#26785e"></div></div><div class="wlbl">W15</div></div>
+          <div class="week-col"><div class="wbar-wrap" style="outline:2px solid #1b2840"><div class="wbar-seg" style="height:8%;background:#8d2d35"></div><div class="wbar-seg" style="height:17%;background:#b34b39"></div><div class="wbar-seg" style="height:29%;background:#9c6a1c"></div><div class="wbar-seg" style="height:46%;background:#26785e"></div></div><div class="wlbl" style="color:#1b2840;font-weight:700">Now</div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3 style="margin-bottom:0.6rem">Top signal drivers this week</h3>
+        <div class="sig-bar-row"><div class="sig-bar-lbl">Missed medication</div><div class="sig-bar-track"><div class="sig-bar-fill" style="width:71%;background:#25608f"></div></div><div class="sig-bar-val">71%</div><div class="sig-bar-domain" style="background:#d9eaf6;color:#1d5f8f">Physical</div></div>
+        <div class="sig-bar-row"><div class="sig-bar-lbl">Social isolation</div><div class="sig-bar-track"><div class="sig-bar-fill" style="width:58%;background:#246d57"></div></div><div class="sig-bar-val">58%</div><div class="sig-bar-domain" style="background:#dceee4;color:#246d57">Social</div></div>
+        <div class="sig-bar-row"><div class="sig-bar-lbl">Distress in notes</div><div class="sig-bar-track"><div class="sig-bar-fill" style="width:46%;background:#5a4f89"></div></div><div class="sig-bar-val">46%</div><div class="sig-bar-domain" style="background:#e8e3f7;color:#4f4680">Mental</div></div>
+        <div class="sig-bar-row"><div class="sig-bar-lbl">Family conflict flagged</div><div class="sig-bar-track"><div class="sig-bar-fill" style="width:21%;background:#b34b39"></div></div><div class="sig-bar-val">21%</div><div class="sig-bar-domain" style="background:#f4ddcf;color:#8c4527">Safeguard</div></div>
+      </div>
+
+      <div class="panel-dark" style="margin-top:0.7rem">Product leap: move from scoring people to improving systems. The next layer should trigger moderate-band actions, detect rapid risk acceleration, and suggest auditable referrals.</div>
+    </section>
+  </div>
+
+  <script>
+    const SECTION_ORDER = ['problem', 'arch', 'note', 'matrix', 'engine', 'q2', 'cost', 'dash', 'compete', 'orgdash'];
+
+    function show(id) {
+      document.querySelectorAll('.sec').forEach((s) => s.classList.remove('active'));
+      document.querySelectorAll('.nb').forEach((b) => {
+        b.classList.remove('active');
+        b.removeAttribute('aria-current');
+      });
+      const section = document.getElementById('s-' + id);
+      if (section) {
+        section.classList.add('active');
+      }
+      const navButtons = document.querySelectorAll('.nb');
+      const activeIndex = SECTION_ORDER.indexOf(id);
+      if (activeIndex > -1 && navButtons[activeIndex]) {
+        navButtons[activeIndex].classList.add('active');
+        navButtons[activeIndex].setAttribute('aria-current', 'page');
+      }
+
+      const progressBar = document.getElementById('progress-bar');
+      if (progressBar && activeIndex > -1) {
+        const percentage = ((activeIndex + 1) / SECTION_ORDER.length) * 100;
+        progressBar.style.width = percentage + '%';
+      }
+
+      const deckMeta = document.getElementById('deck-meta');
+      if (deckMeta && activeIndex > -1 && navButtons[activeIndex]) {
+        deckMeta.textContent = 'Slide ' + (activeIndex + 1) + ' of ' + SECTION_ORDER.length + ' • ' + navButtons[activeIndex].textContent;
+      }
+
+      if (window.location.hash !== '#' + id) {
+        history.replaceState(null, '', '#' + id);
+      }
+
+      const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      window.scrollTo({ top: 0, behavior: reduceMotion ? 'auto' : 'smooth' });
+    }
+
+    function toggleDetail(id) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.style.display = el.style.display === 'block' ? 'none' : 'block';
+      const trigger = document.querySelector('.client-row[aria-controls="' + id + '"]');
+      if (trigger) {
+        trigger.setAttribute('aria-expanded', el.style.display === 'block' ? 'true' : 'false');
+      }
+    }
+
+    function filterDash(band, btn) {
+      document.querySelectorAll('.df').forEach((b) => b.classList.remove('active'));
+      btn.classList.add('active');
+      document.querySelectorAll('.client-row').forEach((row) => {
+        row.style.display = band === 'all' || row.dataset.band === band ? 'flex' : 'none';
+      });
+      document.querySelectorAll('.client-detail').forEach((d) => {
+        d.style.display = 'none';
+      });
+    }
+
+    function up() {
+      const pills = [];
+      document.querySelectorAll('#s-note select').forEach((s) => {
+        const v = s.value;
+        if (v === 'Refused meal') pills.push({ l: 'Refused meal', c: 'pill-p' });
+        if (v === 'Signs of dehydration') pills.push({ l: 'Dehydration signs', c: 'pill-p' });
+        if (v === 'Refused fluids') pills.push({ l: 'Refused fluids', c: 'pill-p' });
+        if (v === 'Refused medication') pills.push({ l: 'Missed medication', c: 'pill-p' });
+        if (v === 'Fall occurred') pills.push({ l: 'Fall occurred', c: 'pill-p' });
+        if (v === 'Significant decline') pills.push({ l: 'Mobility decline', c: 'pill-p' });
+        if (v === 'Distressed' || v === 'Agitated') pills.push({ l: 'Distress detected', c: 'pill-m' });
+        if (v === 'Low or withdrawn') pills.push({ l: 'Low mood', c: 'pill-m' });
+        if (v === 'No answer - welfare concern raised') pills.push({ l: 'No-contact missed visit', c: 'pill-p' });
+        if (v === 'seek' || v === 'not-seek' || v === 'unable') pills.push({ l: 'Not in employment', c: 'pill-s' });
+        if (v === 'u3' || v === '3-5') pills.push({ l: 'Severely reduced sleep', c: 'pill-m' });
+        if (v === 'applied') pills.push({ l: 'Benefits pending', c: 'pill-s' });
+        if (v === 'none') pills.push({ l: 'No income', c: 'pill-s' });
+      });
+
+      const preg = document.getElementById('preg-f') ? document.getElementById('preg-f').value : '';
+      const pregA = document.getElementById('preg-a');
+      if (preg === 'confirmed' || preg === 'postpartum' || preg === 'suspected') {
+        pills.push({ l: 'Pregnancy flag', c: 'pill-p' });
+        if (pregA) pregA.style.display = 'block';
+      } else if (pregA) {
+        pregA.style.display = 'none';
+      }
+
+      const sui = document.querySelector('#s-note input[name="sui"]:checked');
+      const suiSub = document.getElementById('sui-sub');
+      const suiA = document.getElementById('sui-a');
+      if (sui && sui.value === 'active') {
+        pills.push({ l: 'Active suicidal ideation', c: 'pill-sg' });
+        if (suiSub) suiSub.style.display = 'block';
+        if (suiA) suiA.style.display = 'block';
+      } else if (sui && sui.value === 'passive') {
+        pills.push({ l: 'Passive suicidal ideation', c: 'pill-sg' });
+        if (suiSub) suiSub.style.display = 'block';
+        if (suiA) suiA.style.display = 'none';
+      } else {
+        if (suiSub) suiSub.style.display = 'none';
+        if (suiA) suiA.style.display = 'none';
+      }
+
+      const means = document.getElementById('sui-means') ? document.getElementById('sui-means').value : '';
+      if (means === 'has-plan') pills.push({ l: 'Specific plan identified', c: 'pill-sg' });
+
+      const inc = document.getElementById('inc-f') ? document.getElementById('inc-f').value : '';
+      const sdohA = document.getElementById('sdoh-a');
+      if (inc === '0-11k' || inc === 'none') {
+        pills.push({ l: 'Financial vulnerability', c: 'pill-s' });
+        if (sdohA) sdohA.style.display = 'block';
+      } else if (sdohA) {
+        sdohA.style.display = 'none';
+      }
+
+      const ben = document.getElementById('ben-f') ? document.getElementById('ben-f').value : '';
+      const benDetail = document.getElementById('ben-detail');
+      if (benDetail) benDetail.style.display = ben === 'yes' ? 'block' : 'none';
+
+      const needs = document.getElementById('needs-f') ? document.getElementById('needs-f').value : '';
+      const needsDetail = document.getElementById('needs-detail');
+      if (needsDetail) needsDetail.style.display = needs === 'yes' || needs === 'partial' ? 'block' : 'none';
+
+      document.querySelectorAll('#s-note input[type="checkbox"]').forEach((cb) => {
+        if (!cb.checked) return;
+        const lbl = cb.parentElement ? cb.parentElement.textContent.trim() : '';
+        if (lbl.includes('Abuse')) pills.push({ l: 'Abuse disclosure', c: 'pill-sg' });
+        if (lbl.includes('conflict')) pills.push({ l: 'Family conflict', c: 'pill-sg' });
+        if (lbl.includes('unsafe at home')) pills.push({ l: 'Unsafe at home', c: 'pill-sg' });
+        if (lbl.includes('behavioral')) pills.push({ l: 'Sudden behavior change', c: 'pill-sg' });
+        if (lbl.includes('physiotherapy')) pills.push({ l: 'Refused physio', c: 'pill-sg' });
+        if (lbl.includes('Housing - at risk')) pills.push({ l: 'Housing need', c: 'pill-s' });
+        if (lbl.includes('Food -')) pills.push({ l: 'Food insecurity', c: 'pill-s' });
+        if (lbl.includes('Social connection')) pills.push({ l: 'Social isolation need', c: 'pill-s' });
+        if (lbl.includes('Mental health support')) pills.push({ l: 'Mental health access gap', c: 'pill-m' });
+      });
+
+      const ft = document.getElementById('ft');
+      if (ft && ft.value.length > 10) {
+        const t = ft.value.toLowerCase();
+        if (t.includes('unsafe') || t.includes('scared')) pills.push({ l: 'NLP: unsafe feeling', c: 'pill-sg' });
+        if (t.includes('hit') || t.includes('hurt')) pills.push({ l: 'NLP: harm indicator', c: 'pill-sg' });
+        if (t.includes('cold') || t.includes('freezing')) pills.push({ l: 'NLP: cold environment', c: 'pill-p' });
+        if (t.includes('withdraw') || t.includes('crying') || t.includes('upset')) pills.push({ l: 'NLP: distress signal', c: 'pill-m' });
+        if (t.includes('no money') || t.includes('debt')) pills.push({ l: 'NLP: financial stress', c: 'pill-s' });
+      }
+
+      const pa = document.getElementById('pa');
+      if (!pa) return;
+      if (pills.length === 0) {
+        pa.innerHTML = '<span class="pill pill-n">No signals flagged yet</span>';
+        return;
+      }
+      const unique = [...new Map(pills.map((p) => [p.l, p])).values()];
+      pa.innerHTML = unique.map((p) => '<span class="pill ' + p.c + '">' + p.l + '</span>').join('');
+    }
+
+    const EWEIGHTS = {
+      'Missed medication': { w: 2.5, d: 'physical' },
+      'Refused meal': { w: 1.5, d: 'physical' },
+      'Dehydration signs': { w: 2.5, d: 'physical' },
+      'Distress in notes': { w: 2.5, d: 'mental' },
+      'Depression flag': { w: 1.5, d: 'mental' },
+      'Substance use signal': { w: 2.5, d: 'mental' },
+      'Housing instability': { w: 2.0, d: 'social' },
+      'Stable support network': { w: 0.8, d: 'social' },
+      'Self-harm indicator': { w: 5.0, d: 'safeguard', crit: true },
+      'Abuse disclosure': { w: 5.0, d: 'safeguard', crit: true },
+      'Sudden behavior change': { w: 2.5, d: 'safeguard' }
+    };
+
+    const DC = {
+      physical: '#25608f',
+      mental: '#5a4f89',
+      social: '#246d57',
+      safeguard: '#b34b39'
+    };
+
+    function toggleSig(btn) {
+      const d = btn.dataset.domain;
+      btn.classList.toggle('on-' + d);
+      recalc();
+    }
+
+    function recalc() {
+      const active = [];
+      document.querySelectorAll('.st2').forEach((b) => {
+        const d = b.dataset.domain;
+        if (b.classList.contains('on-' + d)) active.push(b.textContent.trim());
+      });
+
+      const hasCrit = active.some((s) => EWEIGHTS[s] && EWEIGHTS[s].crit);
+      const overrideEl = document.getElementById('eoverride');
+      if (overrideEl) overrideEl.style.display = hasCrit ? 'block' : 'none';
+
+      let odds = 0.10 / 0.90;
+      const parts = [];
+      active.forEach((s) => {
+        if (EWEIGHTS[s]) {
+          odds *= EWEIGHTS[s].w;
+          parts.push(EWEIGHTS[s].w + 'x');
+        }
+      });
+
+      const post = odds / (1 + odds);
+      const pct = Math.round(post * 100);
+      const sval = document.getElementById('sval');
+      if (sval) sval.textContent = pct + '%';
+
+      const sb = document.getElementById('sband');
+      let band;
+      let bc;
+      if (hasCrit) {
+        band = 'Urgent (override)';
+        bc = 'burg';
+      } else if (post >= 0.7) {
+        band = 'Urgent';
+        bc = 'burg';
+      } else if (post >= 0.5) {
+        band = 'High';
+        bc = 'bhi';
+      } else if (post >= 0.25) {
+        band = 'Moderate';
+        bc = 'bmod';
+      } else {
+        band = 'Low';
+        bc = 'blow';
+      }
+
+      if (sb) {
+        sb.className = 'sband ' + bc;
+        sb.textContent = band;
+      }
+
+      const calc = document.getElementById('calc');
+      if (calc) {
+        calc.textContent = active.length === 0
+          ? 'odds = 0.111 (no signals active)'
+          : 'odds = 0.111 x ' + parts.join(' x ') + ' = ' + odds.toFixed(3) + ' -> P = ' + pct + '%';
+      }
+
+      const bars = document.getElementById('ebars');
+      if (!bars) return;
+      bars.innerHTML = '';
+      if (active.length === 0) {
+        bars.innerHTML = '<div style="font-size:0.72rem;color:#6f6454">No signals active</div>';
+      } else {
+        active.forEach((s) => {
+          if (!EWEIGHTS[s]) return;
+          const w = EWEIGHTS[s].w;
+          const p2 = Math.min(Math.round(((w - 0.5) / 5) * 100), 100);
+          const col = DC[EWEIGHTS[s].d] || '#7b705f';
+          bars.innerHTML += '<div class="br"><div class="bl">' + s + '</div><div class="bt"><div class="bf" style="width:' + p2 + '%;background:' + col + '"></div></div><div style="font-size:0.72rem;color:#6a5f4f;text-align:right">' + w + 'x</div></div>';
+        });
+      }
+
+      const at = document.getElementById('eaction');
+      if (!at) return;
+      if (hasCrit) at.textContent = 'Critical signal detected. Rulebook bypasses score and triggers immediate safeguarding escalation.';
+      else if (post >= 0.7) at.textContent = 'Urgent. Supervisor notified within 4 hours. Welfare check required within 24 hours.';
+      else if (post >= 0.5) at.textContent = 'High risk. Coordinator must make contact within 48 hours and document outcome.';
+      else if (post >= 0.25) at.textContent = 'Moderate risk. Coordinator check-in required within 5 business days.';
+      else at.textContent = 'Low risk. Continue baseline monitoring and review at next planned visit.';
+    }
+
+    function linkLabels() {
+      let autoId = 0;
+      document.querySelectorAll('.fg').forEach((group) => {
+        const label = group.querySelector('label');
+        const control = group.querySelector('input, select, textarea');
+        if (!label || !control) return;
+        if (!control.id) {
+          autoId += 1;
+          control.id = 'auto-field-' + autoId;
+        }
+        if (!label.getAttribute('for')) {
+          label.setAttribute('for', control.id);
+        }
+      });
+    }
+
+    function getCurrentSectionIndex() {
+      const active = document.querySelector('.sec.active');
+      if (!active) return 0;
+      return Math.max(0, SECTION_ORDER.indexOf(active.id.replace('s-', '')));
+    }
+
+    function goSection(direction) {
+      const current = getCurrentSectionIndex();
+      const next = Math.min(SECTION_ORDER.length - 1, Math.max(0, current + direction));
+      show(SECTION_ORDER[next]);
+    }
+
+    window.addEventListener('keydown', (event) => {
+      if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
+      const target = event.target;
+      const tag = target && target.tagName ? target.tagName.toLowerCase() : '';
+      if (tag === 'input' || tag === 'textarea' || tag === 'select' || tag === 'button' || tag === 'a') return;
+      if (target && target.closest && target.closest('.nav, .deck-controls, [role="button"]')) return;
+      if (event.key === 'ArrowRight') {
+        event.preventDefault();
+        goSection(1);
+      }
+      if (event.key === 'ArrowLeft') {
+        event.preventDefault();
+        goSection(-1);
+      }
+    });
+
+    const initial = window.location.hash ? window.location.hash.slice(1) : 'problem';
+    linkLabels();
+    show(SECTION_ORDER.includes(initial) ? initial : 'problem');
+    recalc();
+    up();
+  </script>
+</body>
+</html>
